@@ -7,7 +7,7 @@ A simple Q-learning helper library for JavaScript.
 Use the hosted script:
 
 ```html
-<script src="https://limedev.xyz/ai.js"></script>
+<script src="https://limedev.xyz/lib/ai.js"></script>
 ```
 
 Or use a local copy:
@@ -25,7 +25,7 @@ const name = "myNewAi";
 const explorationRate = 0.1; // chance of random action during learning
 const discountFactor = 0.9;  // importance of future rewards
 
-const ai = new qTable(name, explorationRate, discountFactor);
+const myNewAi = new qTable(name, explorationRate, discountFactor);
 ```
 
 `name` is used as the key in `localStorage`, so the table persists between reloads.
@@ -35,9 +35,9 @@ const ai = new qTable(name, explorationRate, discountFactor);
 Use `saveTerminal(state, reward)` for end states:
 
 ```js
-ai.saveTerminal("win", 1);
-ai.saveTerminal("lose", -1);
-ai.saveTerminal("draw", 0);
+myNewAi.saveTerminal("win", 1);
+myNewAi.saveTerminal("lose", -1);
+myNewAi.saveTerminal("draw", 0);
 ```
 
 ### Save transitions and learned values
@@ -45,7 +45,7 @@ ai.saveTerminal("draw", 0);
 Use `save(state, action, possibleNextStates, additionalReward = 0, mode = "max")`:
 
 ```js
-ai.save(
+myNewAi.save(
   "player-turn:X..O.....",
   "place-4",
   ["opponent-turn:X..OO....", "opponent-turn:X..O.O..."],
@@ -67,7 +67,7 @@ ai.save(
 Use `get(state, possibleActions, canExplore = true)`:
 
 ```js
-const action = ai.get(
+const action = myNewAi.get(
   "player-turn:X..O.....",
   ["place-1", "place-2", "place-4", "place-7"],
   true
