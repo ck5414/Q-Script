@@ -1,28 +1,85 @@
 # Q-Script
-A simple AI Q-Lerarning library for JavaSript
 
-# Importing
-Use
-```
-<script src='https://limedev.xyz/ai.js'></script>
-```
-If you want to use the local version just use:
-```
-<script src='path to file'></script>
-```
-# Ussage
-defining new qTable instance:
-```
-name = "myNewAi"
-//name for the qTable instance this name is used as a key for local storage
-explorationRate = 0.1
-//chance of ai taking random action when learning
-discountFactor = 0.9
-//multiplayer for score of previous action that is before scoring state higher for longer games for eg. ches would work with 0.99
-const ai = new qTable(name, explorationRate, discountFactor)
-```
-saving:
-terminal state:
+A simple Q-learning helper library for JavaScript.
+
+## Importing
+
+Use the hosted script:
+
+```html
+<script src="https://limedev.xyz/ai.js"></script>
 ```
 
+Or use a local copy:
+
+```html
+<script src="./ai.js"></script>
 ```
+
+## Usage
+
+### Create a Q-table
+
+```js
+const name = "myNewAi";
+const explorationRate = 0.1; // chance of random action during learning
+const discountFactor = 0.9;  // importance of future rewards
+
+const ai = new qTable(name, explorationRate, discountFactor);
+```
+
+`name` is used as the key in `localStorage`, so the table persists between reloads.
+
+### Mark terminal states
+
+Use `saveTerminal(state, reward)` for end states:
+
+```js
+ai.saveTerminal("win", 1);
+ai.saveTerminal("lose", -1);
+ai.saveTerminal("draw", 0);
+```
+
+### Save transitions and learned values
+
+Use `save(state, action, possibleNextStates, additionalReward = 0, mode = "max")`:
+
+```js
+ai.save(
+  "player-turn:X..O.....",
+  "place-4",
+  ["opponent-turn:X..OO....", "opponent-turn:X..O.O..."],
+  0,
+  "max"
+);
+```
+
+- `state`: current state key
+- `action`: action taken from that state
+- `possibleNextStates`: next states reachable after the action
+- `additionalReward`: immediate reward added to estimated future reward
+- `mode`:
+  - `"max"` for agents trying to maximize reward
+  - `"min"` for agents trying to minimize score (for adversarial behavior)
+
+### Choose an action
+
+Use `get(state, possibleActions, canExplore = true)`:
+
+```js
+const action = ai.get(
+  "player-turn:X..O.....",
+  ["place-1", "place-2", "place-4", "place-7"],
+  true
+);
+```
+
+- If exploration is enabled, the agent may return a random action based on `explorationRate`.
+- If a state has no learned values yet, it picks a random action.
+- If multiple actions share the best score, one is picked randomly.
+
+## Notes
+
+- Data is stored in `localStorage`.
+- Calling `get()` on a terminal state throws an error.
+- This library expects your app to define how states/actions are represented as strings.
